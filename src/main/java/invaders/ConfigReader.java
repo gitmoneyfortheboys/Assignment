@@ -8,16 +8,29 @@ import org.json.simple.parser.ParseException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Statement;
 
 public class ConfigReader {
-    private static JSONObject gameInfo;
-    private static JSONObject playerInfo;
-    private static JSONArray bunkersInfo;
-    private static JSONArray enemiesInfo;
+    private JSONObject gameInfo;
+    private JSONObject playerInfo;
+    private JSONArray bunkersInfo;
+    private JSONArray enemiesInfo;
 
+    // The Singleton instance
+    private static ConfigReader instance;
 
-    public static void parse(String configPath){
+    // Private constructor to prevent instantiation
+    private ConfigReader() {}
+
+    // Public method to get the instance
+    public static ConfigReader getInstance() {
+        if (instance == null) {
+            instance = new ConfigReader();
+        }
+        return instance;
+    }
+
+    // Instance method to parse the configuration
+    public void parse(String configPath){
         JSONParser parser = new JSONParser();
         try {
             JSONObject configObject = (JSONObject) parser.parse(new FileReader(configPath));
@@ -25,36 +38,37 @@ public class ConfigReader {
             // Reading game section
             gameInfo = (JSONObject) configObject.get("Game");
 
-	        // Reading player section
+            // Reading player section
             playerInfo = (JSONObject) configObject.get("Player");
 
-			// Reading bunker section
+            // Reading bunker section
             bunkersInfo = (JSONArray) configObject.get("Bunkers");
 
             // Reading enemies section
             enemiesInfo = (JSONArray) configObject.get("Enemies");
         } catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static JSONObject getGameInfo() {
+    // Instance getters for the configuration data
+    public JSONObject getGameInfo() {
         return gameInfo;
     }
 
-    public static JSONObject getPlayerInfo() {
+    public JSONObject getPlayerInfo() {
         return playerInfo;
     }
 
-    public static JSONArray getBunkersInfo() {
+    public JSONArray getBunkersInfo() {
         return bunkersInfo;
     }
 
-    public static JSONArray getEnemiesInfo() {
+    public JSONArray getEnemiesInfo() {
         return enemiesInfo;
     }
 }

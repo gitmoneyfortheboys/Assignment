@@ -7,7 +7,7 @@ import invaders.physics.Vector2D;
 import javafx.scene.image.Image;
 import org.json.simple.JSONObject;
 
-public class BunkerBuilder extends Builder{
+public class BunkerBuilder extends Builder {
     private Bunker bunker;
 
     @Override
