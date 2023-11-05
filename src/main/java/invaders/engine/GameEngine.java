@@ -24,6 +24,9 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.text.SimpleDateFormat;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  * This class manages the main loop and logic of the game
  */
@@ -50,6 +53,9 @@ public class GameEngine {
 	private Instant gameStartTime;
 	private Duration elapsedTime;
 
+    private String formattedTime = "0:00";
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("m:ss");
+
 	public GameEngine(String difficulty){
 	
 		// Instantiate the difficulty level based on user selection
@@ -61,7 +67,11 @@ public class GameEngine {
 
 		// Get player info from the difficulty settings
 		this.player = new Player(difficultyLevel.getPlayerSettings());
-		renderables.add(player);
+
+		this.gameStartTime = Instant.now();
+        updateGameTime();
+
+
 	
 		Director director = new Director();
 		BunkerBuilder bunkerBuilder = new BunkerBuilder();
@@ -83,6 +93,8 @@ public class GameEngine {
 		}
 
 		this.gameStartTime = Instant.now();
+
+		renderables.add(player);
 	}
 	
 
@@ -138,7 +150,38 @@ public class GameEngine {
 				ro.getPosition().setY(offset);
 			}
 		}
+
+		updateGameTime();
 	}
+
+	public void updateGameTime() {
+        if (!isGameOver()) {
+            Duration duration = Duration.between(gameStartTime, Instant.now());
+            LocalTime time = LocalTime.ofSecondOfDay(duration.getSeconds());
+            formattedTime = time.format(TIME_FORMATTER);
+        }
+    }
+
+    private boolean isGameOver() {
+        // Check if the player is dead
+        if (player != null && !player.isAlive()) {
+            return true;
+        }
+
+        // Or if there are no more enemies alive
+        for (GameObject obj : gameObjects) {
+            if (obj instanceof Enemy && ((Enemy) obj).isAlive()) {
+                return false; // There is at least one enemy alive
+            }
+        }
+
+        // If we reach this point, all enemies are destroyed
+        return true;
+    }
+
+    public String getFormattedTime() {
+        return formattedTime;
+    }
 
 	public List<Renderable> getRenderables(){
 		return renderables;

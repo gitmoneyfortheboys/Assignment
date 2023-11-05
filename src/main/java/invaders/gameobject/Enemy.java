@@ -46,7 +46,7 @@ public class Enemy implements GameObject, Renderable {
                 engine.getPendingToAddGameObject().add(p);
                 engine.getPendingToAddRenderable().add(p);
             }
-        }else{
+        } else{
             pendingToDeleteEnemyProjectile.clear();
             for(Projectile p : enemyProjectile){
                 if(!p.isAlive()){
