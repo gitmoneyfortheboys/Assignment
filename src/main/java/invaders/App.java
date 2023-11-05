@@ -5,8 +5,6 @@ import javafx.stage.Stage;
 import invaders.engine.GameEngine;
 import invaders.engine.GameWindow;
 
-import java.util.Map;
-
 public class App extends Application {
 
     public static void main(String[] args) {
@@ -15,7 +13,10 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        GameEngine model = new GameEngine("src/main/resources/config_easy.json");
+        String selectedDifficulty = "easy"; // This should be determined by user input
+
+        // Create the game engine with the selected difficulty
+        GameEngine model = new GameEngine(selectedDifficulty);
         GameWindow window = new GameWindow(model);
         window.run();
 

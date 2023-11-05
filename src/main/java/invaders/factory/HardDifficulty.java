@@ -1,6 +1,8 @@
 package invaders.factory;
 
 import invaders.factory.DifficultyLevel;
+
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -10,8 +12,8 @@ import java.io.FileReader;
 public class HardDifficulty implements DifficultyLevel {
     private JSONObject gameSettings;
     private JSONObject playerSettings;
-    private JSONObject bunkersSettings;
-    private JSONObject enemiesSettings;
+    private JSONArray bunkersSettings;
+    private JSONArray enemiesSettings;
 
     public HardDifficulty() {
         // Load the configuration from the JSON file
@@ -20,8 +22,8 @@ public class HardDifficulty implements DifficultyLevel {
             JSONObject config = (JSONObject) parser.parse(new FileReader("src/main/resources/config_hard.json"));
             this.gameSettings = (JSONObject) config.get("Game");
             this.playerSettings = (JSONObject) config.get("Player");
-            this.bunkersSettings = (JSONObject) config.get("Bunkers");
-            this.enemiesSettings = (JSONObject) config.get("Enemies");
+            this.bunkersSettings = (JSONArray) config.get("Bunkers");
+            this.enemiesSettings = (JSONArray) config.get("Enemies");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -38,12 +40,12 @@ public class HardDifficulty implements DifficultyLevel {
     }
 
     @Override
-    public JSONObject getBunkersSettings() {
+    public JSONArray getBunkersSettings() {
         return bunkersSettings;
     }
 
     @Override
-    public JSONObject getEnemiesSettings() {
+    public JSONArray getEnemiesSettings() {
         return enemiesSettings;
     }
 }

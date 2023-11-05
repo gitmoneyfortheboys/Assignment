@@ -1,6 +1,7 @@
 package invaders.factory;
 
 import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 
 public interface DifficultyLevel {
     // Method to get the game settings for this difficulty level
@@ -10,9 +11,9 @@ public interface DifficultyLevel {
     JSONObject getPlayerSettings();
 
     // Method to get the bunkers settings for this difficulty level
-    JSONObject getBunkersSettings();
+    JSONArray getBunkersSettings();
 
     // Method to get the enemies settings for this difficulty level
-    JSONObject getEnemiesSettings();
+    JSONArray getEnemiesSettings();
 }
 

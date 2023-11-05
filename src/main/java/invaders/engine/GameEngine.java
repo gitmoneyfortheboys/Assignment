@@ -7,12 +7,16 @@ import invaders.ConfigReader;
 import invaders.builder.BunkerBuilder;
 import invaders.builder.Director;
 import invaders.builder.EnemyBuilder;
+import invaders.factory.DifficultyFactory;
+import invaders.factory.DifficultyLevel;
 import invaders.factory.Projectile;
 import invaders.gameobject.Bunker;
 import invaders.gameobject.Enemy;
 import invaders.gameobject.GameObject;
 import invaders.entities.Player;
 import invaders.rendering.Renderable;
+
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -36,39 +40,41 @@ public class GameEngine {
 	private int gameHeight;
 	private int timer = 45;
 
-	public GameEngine(String config){
-		// Read the config here
-        ConfigReader configReader = ConfigReader.getInstance();
-        configReader.parse(config);
+	private DifficultyLevel difficultyLevel;
 
-		// Get game width and height
-		gameWidth = ((Long)((JSONObject) configReader.getGameInfo().get("size")).get("x")).intValue();
-		gameHeight = ((Long)((JSONObject) configReader.getGameInfo().get("size")).get("y")).intValue();
+	public GameEngine(String difficulty){
+	
+		// Instantiate the difficulty level based on user selection
+		this.difficultyLevel = DifficultyFactory.createDifficulty(difficulty);
 
-		//Get player info
-		this.player = new Player(configReader.getPlayerInfo());
+		// Get game width and height from the difficulty settings
+		gameWidth = ((Long)((JSONObject) difficultyLevel.getGameSettings().get("size")).get("x")).intValue();
+		gameHeight = ((Long)((JSONObject) difficultyLevel.getGameSettings().get("size")).get("y")).intValue();
+
+		// Get player info from the difficulty settings
+		this.player = new Player(difficultyLevel.getPlayerSettings());
 		renderables.add(player);
-
-
+	
 		Director director = new Director();
 		BunkerBuilder bunkerBuilder = new BunkerBuilder();
-		//Get Bunkers info
-		for(Object eachBunkerInfo:configReader.getBunkersInfo()){
+		// Get Bunkers info from the difficulty level
+		JSONArray bunkersInfo = difficultyLevel.getBunkersSettings();
+		for(Object eachBunkerInfo : bunkersInfo){
 			Bunker bunker = director.constructBunker(bunkerBuilder, (JSONObject) eachBunkerInfo);
 			gameObjects.add(bunker);
 			renderables.add(bunker);
 		}
-
-
+	
 		EnemyBuilder enemyBuilder = new EnemyBuilder();
-		//Get Enemy info
-		for(Object eachEnemyInfo:configReader.getEnemiesInfo()){
-			Enemy enemy = director.constructEnemy(this,enemyBuilder,(JSONObject)eachEnemyInfo);
+		// Get Enemy info from the difficulty level
+		JSONArray enemiesInfo = difficultyLevel.getEnemiesSettings();
+		for(Object eachEnemyInfo : enemiesInfo){
+			Enemy enemy = director.constructEnemy(this, enemyBuilder, (JSONObject) eachEnemyInfo);
 			gameObjects.add(enemy);
 			renderables.add(enemy);
 		}
-
 	}
+	
 
 	/**
 	 * Updates the game/simulation
