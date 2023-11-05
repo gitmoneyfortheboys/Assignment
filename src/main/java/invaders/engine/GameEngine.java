@@ -19,6 +19,11 @@ import invaders.rendering.Renderable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.time.Instant;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.text.SimpleDateFormat;
+
 /**
  * This class manages the main loop and logic of the game
  */
@@ -41,6 +46,9 @@ public class GameEngine {
 	private int timer = 45;
 
 	private DifficultyLevel difficultyLevel;
+
+	private Instant gameStartTime;
+	private Duration elapsedTime;
 
 	public GameEngine(String difficulty){
 	
@@ -73,6 +81,8 @@ public class GameEngine {
 			gameObjects.add(enemy);
 			renderables.add(enemy);
 		}
+
+		this.gameStartTime = Instant.now();
 	}
 	
 
@@ -129,8 +139,39 @@ public class GameEngine {
 			}
 		}
 
+		// Calculate the elapsed time
+		this.elapsedTime = Duration.between(gameStartTime, Instant.now());
+
+		displayElapsedTime();
+
+		// Check for game end conditions
+		if (isGameWon() || !player.isAlive()) {
+			// Stop the timer and display the final time
+			displayFinalTime();
+		}
 	}
 
+    private void displayElapsedTime() {
+        // Format the elapsed time into minutes and seconds
+        long minutes = elapsedTime.toMinutes();
+        long seconds = elapsedTime.minus(minutes, ChronoUnit.MINUTES).getSeconds();
+        String timeText = String.format("%02d:%02d", minutes, seconds);
+
+        // Code to render the timeText on the game screen
+        // This pseudocode needs to be replaced with actual rendering code
+        // renderTimeOnScreen(timeText);
+    }
+
+    private void displayFinalTime() {
+        // The final time is the current elapsed time
+        // This method would be similar to displayElapsedTime but may include additional logic
+        // to handle the end of the game, such as stopping the game loop or displaying a game over screen
+    }
+
+    private boolean isGameWon() {
+        // Pseudocode to check if all enemies are destroyed
+        // return gameObjects.stream().noneMatch(obj -> obj instanceof Enemy && obj.isAlive());
+    }
 	public List<Renderable> getRenderables(){
 		return renderables;
 	}
