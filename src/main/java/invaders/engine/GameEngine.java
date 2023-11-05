@@ -206,7 +206,6 @@ public class GameEngine {
 		return pendingToRemoveRenderable;
 	}
 
-
 	public void leftReleased() {
 		this.left = false;
 	}

@@ -17,6 +17,12 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import org.json.simple.JSONObject;
 
+import javafx.scene.text.Text;
+import javafx.scene.text.Font;
+import javafx.scene.paint.Color;
+
+
+
 public class GameWindow {
 	private final int width;
     private final int height;
@@ -29,6 +35,8 @@ public class GameWindow {
     private double xViewportOffset = 0.0;
     private double yViewportOffset = 0.0;
     // private static final double VIEWPORT_MARGIN = 280.0;
+
+    private Text timeDisplay;
 
 	public GameWindow(GameEngine model){
         this.model = model;
@@ -44,6 +52,17 @@ public class GameWindow {
         scene.setOnKeyPressed(keyboardInputHandler::handlePressed);
         scene.setOnKeyReleased(keyboardInputHandler::handleReleased);
 
+        // Initialize the time display
+        timeDisplay = new Text();
+        timeDisplay.setFont(new Font(20)); // Set the font size (adjust as needed)
+        timeDisplay.setFill(Color.WHITE); // Set the text color to white
+        
+        // Position the text at the top center of the screen
+        timeDisplay.setX(width / 2 - 30); // Adjust the X position based on your text length
+        timeDisplay.setY(30); // Adjust the Y position as needed
+        timeDisplay.toFront(); // Ensure the text is in the foreground
+        pane.getChildren().add(timeDisplay);
+
     }
 
 	public void run() {
@@ -56,6 +75,9 @@ public class GameWindow {
 
     private void draw(){
         model.update();
+
+        // Update the time display
+        timeDisplay.setText(model.getFormattedTime());
 
         List<Renderable> renderables = model.getRenderables();
         for (Renderable entity : renderables) {
