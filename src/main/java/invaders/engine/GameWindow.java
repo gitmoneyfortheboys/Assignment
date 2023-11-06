@@ -38,6 +38,8 @@ public class GameWindow {
 
     private Text timeDisplay;
 
+    private Text scoreDisplay;
+
 	public GameWindow(GameEngine model){
         this.model = model;
 		this.width =  model.getGameWidth();
@@ -56,12 +58,23 @@ public class GameWindow {
         timeDisplay = new Text();
         timeDisplay.setFont(new Font(20)); // Set the font size (adjust as needed)
         timeDisplay.setFill(Color.WHITE); // Set the text color to white
-        
+
         // Position the text at the top center of the screen
         timeDisplay.setX(width / 2 - 30); // Adjust the X position based on your text length
         timeDisplay.setY(30); // Adjust the Y position as needed
         timeDisplay.toFront(); // Ensure the text is in the foreground
         pane.getChildren().add(timeDisplay);
+
+        // Initialize the score display
+        scoreDisplay = new Text();
+        scoreDisplay.setFont(new Font(20)); // Set the font size (adjust as needed)
+        scoreDisplay.setFill(Color.WHITE); // Set the text color to white
+        
+        // Position the score display at the top right of the screen
+        scoreDisplay.setX(width - 100); // Adjust the X position based on your window width
+        scoreDisplay.setY(30); // Adjust the Y position as needed
+        scoreDisplay.toFront(); // Ensure the text is in the foreground
+        pane.getChildren().add(scoreDisplay);
 
     }
 
@@ -78,6 +91,7 @@ public class GameWindow {
 
         // Update the time display
         timeDisplay.setText(model.getFormattedTime());
+        scoreDisplay.setText("Score: " + model.getScore());
 
         List<Renderable> renderables = model.getRenderables();
         for (Renderable entity : renderables) {

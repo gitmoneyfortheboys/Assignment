@@ -106,4 +106,9 @@ public class Bunker implements GameObject, Renderable {
     public void setState(BunkerState state) {
         this.state = state;
     }
+
+    @Override
+    public int getScoreValue() {
+        return 0;
+    }
 }

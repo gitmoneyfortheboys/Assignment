@@ -126,10 +126,18 @@ public class GameEngine {
 	
 				// Handle collision between renderable objects
 				if(renderableA.isColliding(renderableB) && (renderableA.getHealth()>0 && renderableB.getHealth()>0)) {
-					// Check if renderableB is an Enemy and increment score based on its projectile strategy
-					if (renderableB instanceof Enemy) {
-						Enemy enemy = (Enemy) renderableB;
+					// Check if one of the renderables is an Enemy and the other is a PlayerProjectile
+					if ((renderableA instanceof Enemy && renderableB.getRenderableObjectName().equals("PlayerProjectile")) ||
+						(renderableB instanceof Enemy && renderableA.getRenderableObjectName().equals("PlayerProjectile"))) {
+						Enemy enemy = (renderableA instanceof Enemy) ? (Enemy) renderableA : (Enemy) renderableB;
 						increaseScore(enemy.getScoreValue());
+					}
+					// Check if one of the renderables is an EnemyProjectile and the other is a PlayerProjectile
+					// Assuming there is a way to identify PlayerProjectile and EnemyProjectile
+					else if ((renderableA.getRenderableObjectName().equals("EnemyProjectile") && renderableB.getRenderableObjectName().equals("PlayerProjectile")) ||
+							 (renderableB.getRenderableObjectName().equals("EnemyProjectile") && renderableA.getRenderableObjectName().equals("PlayerProjectile"))) {
+						// Assuming there is a getScoreValue method for projectiles or a defined score value
+						increaseScore(renderableA.getScoreValue() + renderableB.getScoreValue());
 					}
 					renderableA.takeDamage(1);
 					renderableB.takeDamage(1);

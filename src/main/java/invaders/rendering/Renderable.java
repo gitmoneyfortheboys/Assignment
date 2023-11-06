@@ -53,4 +53,6 @@ public interface Renderable {
     }
 
     public String getRenderableObjectName();
+
+    public int getScoreValue();
 }

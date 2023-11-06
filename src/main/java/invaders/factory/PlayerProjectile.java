@@ -26,4 +26,8 @@ public class PlayerProjectile extends Projectile {
     public String getRenderableObjectName() {
         return "PlayerProjectile";
     }
+    @Override
+    public int getScoreValue() {
+        return 0;
+    }
 }

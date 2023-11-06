@@ -108,4 +108,9 @@ public class Player implements Moveable, Renderable {
         return "Player";
     }
 
+    @Override
+    public int getScoreValue() {
+        return 0;
+    }
+
 }

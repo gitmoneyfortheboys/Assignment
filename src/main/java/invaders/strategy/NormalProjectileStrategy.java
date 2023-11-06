@@ -10,6 +10,6 @@ public class NormalProjectileStrategy implements ProjectileStrategy{
     }
 
     public int getScoreValue() {
-        return 0;
+        return 1;
     }
 }
