@@ -7,7 +7,9 @@ import invaders.factory.ProjectileFactory;
 import invaders.physics.Collider;
 import invaders.physics.Vector2D;
 import invaders.rendering.Renderable;
+import invaders.strategy.FastProjectileStrategy;
 import invaders.strategy.ProjectileStrategy;
+import invaders.strategy.SlowProjectileStrategy;
 import javafx.scene.image.Image;
 
 import java.io.File;
@@ -76,6 +78,16 @@ public class Enemy implements GameObject, Renderable {
         Logic TBD
          */
 
+    }
+
+    public int getScoreValue() {
+        if (this.projectileStrategy instanceof FastProjectileStrategy) {
+            return 4; // Score for fast alien hit is 4
+        } else if (this.projectileStrategy instanceof SlowProjectileStrategy) {
+            return 3; // Score for slow alien hit is 3
+        } else {
+            return 0; // Default score if no strategy is set or it's a different type
+        }
     }
 
     @Override

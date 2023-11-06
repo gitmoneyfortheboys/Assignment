@@ -5,4 +5,5 @@ import invaders.physics.Vector2D;
 
 public interface ProjectileStrategy {
    public void update(Projectile p);
+   int getScoreValue();
 }

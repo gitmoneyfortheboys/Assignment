@@ -56,6 +56,8 @@ public class GameEngine {
     private String formattedTime = "0:00";
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("m:ss");
 
+	private int score = 0;
+
 	public GameEngine(String difficulty){
 	
 		// Instantiate the difficulty level based on user selection
@@ -105,28 +107,35 @@ public class GameEngine {
 		timer+=1;
 
 		movePlayer();
-
+	
 		for(GameObject go: gameObjects){
 			go.update(this);
 		}
-
+	
 		for (int i = 0; i < renderables.size(); i++) {
 			Renderable renderableA = renderables.get(i);
 			for (int j = i+1; j < renderables.size(); j++) {
 				Renderable renderableB = renderables.get(j);
-
+	
+				// Skip collision detection for certain combinations
 				if((renderableA.getRenderableObjectName().equals("Enemy") && renderableB.getRenderableObjectName().equals("EnemyProjectile"))
-						||(renderableA.getRenderableObjectName().equals("EnemyProjectile") && renderableB.getRenderableObjectName().equals("Enemy"))||
-						(renderableA.getRenderableObjectName().equals("EnemyProjectile") && renderableB.getRenderableObjectName().equals("EnemyProjectile"))){
-				}else{
-					if(renderableA.isColliding(renderableB) && (renderableA.getHealth()>0 && renderableB.getHealth()>0)) {
-						renderableA.takeDamage(1);
-						renderableB.takeDamage(1);
+						||(renderableA.getRenderableObjectName().equals("EnemyProjectile") && renderableB.getRenderableObjectName().equals("Enemy"))
+						||(renderableA.getRenderableObjectName().equals("EnemyProjectile") && renderableB.getRenderableObjectName().equals("EnemyProjectile"))){
+					continue;
+				}
+	
+				// Handle collision between renderable objects
+				if(renderableA.isColliding(renderableB) && (renderableA.getHealth()>0 && renderableB.getHealth()>0)) {
+					// Check if renderableB is an Enemy and increment score based on its projectile strategy
+					if (renderableB instanceof Enemy) {
+						Enemy enemy = (Enemy) renderableB;
+						increaseScore(enemy.getScoreValue());
 					}
+					renderableA.takeDamage(1);
+					renderableB.takeDamage(1);
 				}
 			}
 		}
-
 
 		// ensure that renderable foreground objects don't go off-screen
 		int offset = 1;
@@ -152,6 +161,15 @@ public class GameEngine {
 		}
 
 		updateGameTime();
+	}
+
+	public void increaseScore(int points) {
+		this.score += points;
+		// updateScoreDisplay();
+	}
+
+	public int getScore() {
+		return this.score;
 	}
 
 	public void updateGameTime() {

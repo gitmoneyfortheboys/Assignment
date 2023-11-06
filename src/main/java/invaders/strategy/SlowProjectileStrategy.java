@@ -8,4 +8,8 @@ public class SlowProjectileStrategy implements ProjectileStrategy{
         double newYPos = p.getPosition().getY() + 1;
         p.getPosition().setY(newYPos);
     }
+
+    public int getScoreValue() {
+        return 1;
+    }
 }
