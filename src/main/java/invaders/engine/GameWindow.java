@@ -86,13 +86,15 @@ public class GameWindow {
     }
 
 
-    private void draw(){
+    private void draw() {
+        // First, update the game state.
         model.update();
-
-        // Update the time display
+    
+        // Update the time and score displays.
         timeDisplay.setText(model.getFormattedTime());
         scoreDisplay.setText("Score: " + model.getScore());
-
+    
+        // Update or create views for each renderable entity.
         List<Renderable> renderables = model.getRenderables();
         for (Renderable entity : renderables) {
             boolean notFound = true;
@@ -109,37 +111,40 @@ public class GameWindow {
                 pane.getChildren().add(entityView.getNode());
             }
         }
-
-        for (Renderable entity : renderables){
-            if (!entity.isAlive()){
-                for (EntityView entityView : entityViews){
-                    if (entityView.matchesEntity(entity)){
+    
+        // Mark views for deletion if their corresponding entity is no longer alive.
+        for (Renderable entity : renderables) {
+            if (!entity.isAlive()) {
+                for (EntityView entityView : entityViews) {
+                    if (entityView.matchesEntity(entity)) {
                         entityView.markForDelete();
                     }
                 }
             }
         }
-
-        for (EntityView entityView : entityViews) {
+    
+        // Remove the views that have been marked for deletion.
+        entityViews.removeIf(entityView -> {
             if (entityView.isMarkedForDelete()) {
                 pane.getChildren().remove(entityView.getNode());
+                return true;
             }
-        }
-
-
+            return false;
+        });
+    
+        // Process pending removals and additions to the game state.
         model.getGameObjects().removeAll(model.getPendingToRemoveGameObject());
-        model.getGameObjects().addAll(model.getPendingToAddGameObject());
         model.getRenderables().removeAll(model.getPendingToRemoveRenderable());
+        model.getGameObjects().addAll(model.getPendingToAddGameObject());
         model.getRenderables().addAll(model.getPendingToAddRenderable());
-
+    
+        // Clear the pending lists to avoid processing the same objects again.
         model.getPendingToAddGameObject().clear();
         model.getPendingToRemoveGameObject().clear();
         model.getPendingToAddRenderable().clear();
         model.getPendingToRemoveRenderable().clear();
-
-        entityViews.removeIf(EntityView::isMarkedForDelete);
-
     }
+    
 
 	public Scene getScene() {
         return scene;

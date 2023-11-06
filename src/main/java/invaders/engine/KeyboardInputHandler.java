@@ -11,6 +11,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import invaders.commands.CheatCommand;
+import invaders.commands.RemoveAllSlowProjectilesCommand;
+import invaders.commands.RemoveEnemyCommand;
+
 class KeyboardInputHandler {
     private final GameEngine model;
     private boolean left = false;
@@ -58,6 +62,18 @@ class KeyboardInputHandler {
 
         if(right){
             model.rightPressed();
+        }
+
+            CheatInvoker cheatInvoker = new CheatInvoker();
+
+        if (keyEvent.getCode().equals(KeyCode.P)) {
+            CheatCommand removeAllSlowProjectiles = new RemoveAllSlowProjectilesCommand(model);
+            cheatInvoker.setCommand(removeAllSlowProjectiles);
+            cheatInvoker.executeCommand();
+        } else if (keyEvent.getCode().equals(KeyCode.F)) {
+            CheatCommand removeAllEnemiesWithSameStrategy = new RemoveEnemyCommand(model, "FastProjectileStrategy");
+            cheatInvoker.setCommand(removeAllEnemiesWithSameStrategy);
+            cheatInvoker.executeCommand();
         }
     }
 

@@ -15,6 +15,7 @@ import invaders.gameobject.Enemy;
 import invaders.gameobject.GameObject;
 import invaders.entities.Player;
 import invaders.rendering.Renderable;
+import invaders.strategy.ProjectileStrategy;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -169,6 +170,12 @@ public class GameEngine {
 		}
 
 		updateGameTime();
+
+		// Handle pending removals
+		gameObjects.removeAll(pendingToRemoveGameObject);
+		renderables.removeAll(pendingToRemoveRenderable);
+		pendingToRemoveGameObject.clear();
+		pendingToRemoveRenderable.clear();
 	}
 
 	public void increaseScore(int points) {
@@ -279,4 +286,43 @@ public class GameEngine {
 	public Player getPlayer() {
 		return player;
 	}
+
+	public void removeAllProjectilesOfType(String projectileType) {
+		List<GameObject> toRemove = new ArrayList<>();
+		for (GameObject gameObject : gameObjects) {
+			if (gameObject instanceof Projectile) {
+				Projectile projectile = (Projectile) gameObject;
+				ProjectileStrategy strategy = projectile.getStrategy();
+				if (strategy != null && projectileType.equals(strategy.getClass().getSimpleName())) {
+					toRemove.add(gameObject);
+					// Assuming each projectile has a score value
+					increaseScore(projectile.getScoreValue());
+				}
+			}
+		}
+		gameObjects.removeAll(toRemove);
+		renderables.removeAll(toRemove);
+	}
+
+	
+	public void removeAllEnemiesWithStrategy(String strategy) {
+		for (GameObject gameObject : gameObjects) {
+			if (gameObject instanceof Enemy) {
+				Enemy enemy = (Enemy) gameObject;
+				if (enemy.getProjectileStrategy() != null && strategy.equals(enemy.getProjectileStrategy().getClass().getSimpleName())) {
+					pendingToRemoveGameObject.add(gameObject);
+					increaseScore(enemy.getScoreValue());
+				}
+			}
+		}
+	
+		// Add to pendingToRemoveRenderable if the gameObject is also a Renderable
+		for (GameObject gameObject : pendingToRemoveGameObject) {
+			if (gameObject instanceof Renderable) {
+				pendingToRemoveRenderable.add((Renderable) gameObject);
+			}
+		}
+	}
+	
+	
 }

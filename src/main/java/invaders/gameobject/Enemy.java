@@ -155,4 +155,9 @@ public class Enemy implements GameObject, Renderable {
         this.projectileStrategy = projectileStrategy;
     }
 
+    // Method to get the projectile strategy of the enemy
+    public ProjectileStrategy getProjectileStrategy() {
+        return this.projectileStrategy;
+    }
+
 }
